@@ -59,10 +59,18 @@ class Ball extends PositionComponent with HasGameRef<ThrowBall> {
       // position.y += dt * velocityY;
       position.x += dt * velocityX;
       if (radius < 60) {
-        if (position.y > (game.height * (4 / 6))) {
-          // stop ball movement
-          isThrowed = false;
+        if (position.x > 1350) {
+          if (position.y > ((game.height * (6 / 10)) - 60)) {
+            // stop ball movement
+            isThrowed = false;
+          }
+        } else {
+          if (position.y > (game.height * (4 / 6))) {
+            // stop ball movement
+            isThrowed = false;
+          }
         }
+
         checkStamp(position);
         increaseGravity();
       } else {
