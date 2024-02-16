@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:throw_ball/Components/stamp.dart';
 import 'package:throw_ball/game.dart';
 
 class Ball extends PositionComponent with HasGameRef<ThrowBall> {
@@ -14,7 +15,7 @@ class Ball extends PositionComponent with HasGameRef<ThrowBall> {
   bool isThrowed = false;
   late double velocityX;
   late double velocityY;
-  double radius = 50.0; //! radius should be calculated according to z axis.
+  double radius = 100.0; //! radius should be calculated according to z axis.
   double gravity = 10.0;
   double mass = 1;
   double timeY = 0;
@@ -41,12 +42,10 @@ class Ball extends PositionComponent with HasGameRef<ThrowBall> {
     timeY = (velocityY / bias) / gravity;
     timeY = timeY.abs();
     heightY = ((velocityY / bias) * (velocityY / bias)) / (2 * gravity);
-
-    print("x: $velocityX and y: $velocityY");
-    print("time: $timeY");
-    print("height: $heightY");
   }
 
+  bool isStampAdded = false;
+  late Stamp stamp;
   @override
   void update(double dt) {
     super.update(dt);
@@ -59,10 +58,15 @@ class Ball extends PositionComponent with HasGameRef<ThrowBall> {
       position.y += positionY;
       // position.y += dt * velocityY;
       position.x += dt * velocityX;
-      if (radius < 25) {
-        gravity = 15;
+      if (radius < 60) {
+        if (position.y > (game.height * (4 / 6))) {
+          // stop ball movement
+          isThrowed = false;
+        }
+        checkStamp(position);
+        increaseGravity();
       } else {
-        setRadius(radius - 0.3);
+        setRadius(radius - 0.5);
       }
     }
     if (position.x < -width ||
@@ -77,6 +81,22 @@ class Ball extends PositionComponent with HasGameRef<ThrowBall> {
       return;
     } else {
       radius = newRadius;
+    }
+  }
+
+  void increaseGravity() {
+    if (gravity == 10) {
+      gravity = 15;
+    }
+  }
+
+  void checkStamp(Vector2 pos) {
+    if (!isStampAdded) {
+      stamp = Stamp()..position = pos;
+      game.world.add(stamp);
+      isStampAdded = true;
+    } else {
+      return;
     }
   }
 }

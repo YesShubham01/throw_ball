@@ -6,9 +6,23 @@ import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:throw_ball/Components/ball.dart';
+import 'package:throw_ball/Components/bg.dart';
+import 'package:throw_ball/Components/config.dart';
 
 class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
+  ThrowBall()
+      : super(
+          camera: CameraComponent.withFixedResolution(
+            width: gameWidth,
+            height: gameHeight,
+          ),
+        );
+
+  double get width => size.x;
+  double get height => size.y;
+
   late Ball ball;
+  late Background _bg;
 
   TextComponent titleText = TextComponent(
     text: 'Throw Ball!',
@@ -29,16 +43,20 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    camera.viewfinder.anchor = Anchor.topLeft;
+
+    _bg = Background();
+    world.add(_bg);
 
     ball = Ball();
-    add(
+    world.add(
       ball
-        ..position = Vector2((size.x / 2) + 50, (size.y / 2) + 100)
-        ..anchor = Anchor.center,
+        ..position = Vector2((width / 2), (height / 2))
+        ..anchor = Anchor.topLeft,
     );
 
-    add(titleText..position = Vector2(size.x / 2, 0));
-    add(velocityText..position = Vector2(size.x / 2, 40));
+    world.add(titleText..position = Vector2(width / 2, 0));
+    world.add(velocityText..position = Vector2(width / 2, 40));
     // add target and a target spawner.
   }
 
@@ -54,13 +72,15 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
 
   void resetGame() {
     ball.position = Vector2((size.x / 2) + 50, (size.y / 2) + 100);
-    ball.radius = 50;
+    ball.radius = 100;
     ball.isThrowed = false;
     ball.totalTime = 0;
     ball.mass = 1;
     ball.timeY = 0;
     ball.heightY = 0;
     ball.gravity = 10;
+    ball.stamp.removeFromParent();
+    ball.isStampAdded = false;
     // Reset other game variables as needed
   }
 
