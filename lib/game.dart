@@ -79,7 +79,9 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
     ball.timeY = 0;
     ball.heightY = 0;
     ball.gravity = 10;
-    ball.stamp.removeFromParent();
+    if (ball.isStampAdded) {
+      ball.stamp.removeFromParent();
+    }
     ball.isStampAdded = false;
     // Reset other game variables as needed
   }
