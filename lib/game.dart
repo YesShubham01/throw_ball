@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:throw_ball/Components/ball.dart';
 import 'package:throw_ball/Components/bg.dart';
 import 'package:throw_ball/Components/config.dart';
+import 'package:throw_ball/Components/pokeball.dart';
+import 'package:throw_ball/Components/stamp.dart';
 
 class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
   ThrowBall()
@@ -22,6 +24,8 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
   double get height => size.y;
 
   late Ball ball;
+  late Pokeball pokeball;
+
   late Background _bg;
 
   TextComponent titleText = TextComponent(
@@ -48,12 +52,17 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
     _bg = Background();
     world.add(_bg);
 
-    ball = Ball();
-    world.add(
-      ball
-        ..position = Vector2((width / 2), (height / 2))
-        ..anchor = Anchor.topLeft,
-    );
+    // ball = Ball();
+    // world.add(
+    //   ball
+    //     ..position = Vector2((width / 2), (height / 2))
+    //     ..anchor = Anchor.topLeft,
+    // );
+
+    pokeball = Pokeball();
+    world.add(pokeball);
+
+    // world.add(Stamp()..position = Vector2(2020, size.y / 2));
 
     world.add(titleText..position = Vector2(width / 2, 0));
     world.add(velocityText..position = Vector2(width / 2, 40));
@@ -64,25 +73,45 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
   void onPanUpdate(DragUpdateInfo info) {
     double velocity = info.delta.global.length;
     Vector2 direction = info.delta.global;
-    ball.move(info.delta.global);
+    pokeball.move(info.delta.global);
+    // ball.move(info.delta.global);
     velocityText.text = 'Velocity: $velocity'; // this gives velocity
     t1.text = "value : $direction"; // this gives coordinates
-    ball.throwBall(velocity, direction);
+    // ball.throwBall(velocity, direction);
+    pokeball.throwBall(velocity, direction);
   }
 
   void resetGame() {
-    ball.position = Vector2((size.x / 2) + 50, (size.y / 2) + 100);
-    ball.radius = 100;
-    ball.isThrowed = false;
-    ball.totalTime = 0;
-    ball.mass = 1;
-    ball.timeY = 0;
-    ball.heightY = 0;
-    ball.gravity = 10;
-    if (ball.isStampAdded) {
-      ball.stamp.removeFromParent();
+    // ball.position = Vector2((size.x / 2) + 50, (size.y / 2) + 100);
+    // ball.radius = 100;
+    // ball.isThrowed = false;
+    // ball.totalTime = 0;
+    // ball.mass = 1;
+    // ball.timeY = 0;
+    // ball.heightY = 0;
+    // ball.gravity = 10;
+    // if (ball.isStampAdded) {
+    //   ball.stamp.removeFromParent();
+    // }
+    // ball.isStampAdded = false;
+    // Reset other game variables as needed
+
+    pokeball.position = Vector2((size.x / 2) + 50, (size.y / 2) + 100);
+    pokeball.isThrowed = false;
+    pokeball.totalTime = 0;
+    pokeball.mass = 1;
+    pokeball.timeY = 0;
+    pokeball.heightY = 0;
+    pokeball.gravity = 10;
+    if (pokeball.isStampAdded) {
+      pokeball.stamp.removeFromParent();
     }
-    ball.isStampAdded = false;
+    pokeball.isStampAdded = false;
+    pokeball.size = Vector2(250, 250);
+    pokeball.diameter = 250;
+    pokeball.timeToBounce = false;
+    pokeball.bounceTime = 0;
+    pokeball.countBounceTime = false;
     // Reset other game variables as needed
   }
 
