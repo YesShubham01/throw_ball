@@ -8,8 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:throw_ball/Components/ball.dart';
 import 'package:throw_ball/Components/bg.dart';
 import 'package:throw_ball/Components/config.dart';
-import 'package:throw_ball/Components/pokeball.dart';
-import 'package:throw_ball/Components/stamp.dart';
+import 'package:throw_ball/Components/ball_sprite.dart';
+import 'package:throw_ball/Components/switch.dart';
 
 class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
   ThrowBall()
@@ -24,7 +24,8 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
   double get height => size.y;
 
   late Ball ball;
-  late Pokeball pokeball;
+  late BallSprite pokeball;
+  late SwitchOn switchOn;
 
   late Background _bg;
 
@@ -32,15 +33,6 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
     text: 'Throw Ball!',
   );
   TextComponent velocityText = TextComponent(
-    text: 'Velocity: 0',
-  );
-  TextComponent t1 = TextComponent(
-    text: 'Velocity: 0',
-  );
-  TextComponent t2 = TextComponent(
-    text: 'Velocity: 0',
-  );
-  TextComponent t3 = TextComponent(
     text: 'Velocity: 0',
   );
 
@@ -52,6 +44,9 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
     _bg = Background();
     world.add(_bg);
 
+    switchOn = SwitchOn();
+    world.add(switchOn);
+
     // ball = Ball();
     // world.add(
     //   ball
@@ -59,7 +54,7 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
     //     ..anchor = Anchor.topLeft,
     // );
 
-    pokeball = Pokeball();
+    pokeball = BallSprite();
     world.add(pokeball);
 
     // world.add(Stamp()..position = Vector2(2020, size.y / 2));
@@ -71,14 +66,21 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
 
   @override
   void onPanUpdate(DragUpdateInfo info) {
-    double velocity = info.delta.global.length;
     Vector2 direction = info.delta.global;
-    pokeball.move(info.delta.global);
+    pokeball.move(direction);
     // ball.move(info.delta.global);
-    velocityText.text = 'Velocity: $velocity'; // this gives velocity
-    t1.text = "value : $direction"; // this gives coordinates
     // ball.throwBall(velocity, direction);
-    pokeball.throwBall(velocity, direction);
+    pokeball.throwBall(direction);
+  }
+
+  bool checkCollision(Vector2 hitPosition) {
+    Vector2 switchPosition = switchOn.position;
+
+    double distance = hitPosition.distanceTo(switchPosition);
+    print(distance);
+
+    velocityText.text = "$distance";
+    return distance <= 100;
   }
 
   void resetGame() {

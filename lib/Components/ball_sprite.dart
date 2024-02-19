@@ -2,8 +2,8 @@ import 'package:flame/components.dart';
 import 'package:throw_ball/Components/stamp.dart';
 import 'package:throw_ball/game.dart';
 
-class Pokeball extends SpriteComponent with HasGameRef<ThrowBall> {
-  Pokeball()
+class BallSprite extends SpriteComponent with HasGameRef<ThrowBall> {
+  BallSprite()
       : super(
           size: Vector2(250, 250),
           anchor: Anchor.topLeft,
@@ -20,6 +20,7 @@ class Pokeball extends SpriteComponent with HasGameRef<ThrowBall> {
   double heightY = 0;
   double totalTime = 0;
   double bounceTime = 0;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -32,7 +33,7 @@ class Pokeball extends SpriteComponent with HasGameRef<ThrowBall> {
     position.add(delta);
   }
 
-  void throwBall(double velocity, Vector2 direction) {
+  void throwBall(Vector2 direction) {
     isThrowed = true;
     velocityX = direction.x * bias;
     velocityY = direction.y * bias;
@@ -125,6 +126,7 @@ class Pokeball extends SpriteComponent with HasGameRef<ThrowBall> {
   void checkStamp(Vector2 pos) {
     if (!isStampAdded) {
       stamp = Stamp()..position = pos;
+      game.checkCollision(pos);
       game.world.add(stamp);
       isStampAdded = true;
     } else {
