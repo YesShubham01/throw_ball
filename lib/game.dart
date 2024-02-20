@@ -5,6 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:throw_ball/Cat%20Component/cat.dart';
 import 'package:throw_ball/Components/ball.dart';
 import 'package:throw_ball/Components/bg.dart';
 import 'package:throw_ball/Components/config.dart';
@@ -28,6 +29,7 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
   late SwitchOn switchOn;
 
   late Background _bg;
+  late Cat cat;
 
   TextComponent titleText = TextComponent(
     text: 'Throw Ball!',
@@ -46,6 +48,9 @@ class ThrowBall extends FlameGame with PanDetector, KeyboardEvents {
 
     switchOn = SwitchOn();
     world.add(switchOn);
+
+    cat = Cat();
+    world.add(cat);
 
     // ball = Ball();
     // world.add(
